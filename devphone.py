@@ -21,17 +21,19 @@ def generate_all_11_digit_numbers():
         # AAAABBBB
         for i in range(10):
             for j in range(10):
-                results.add(str(i) * 4 + str(j) * 4)
+                if i != j:  # 确保前后部分不同
+                    results.add(str(i) * 4 + str(j) * 4)
 
         # ABCDABCD
         for i in range(0, 7):  # 0到6是为了保证ABCD可以是连续的数字
-            abcd = ''.join(str(i + j) for j in range(4))
+            abcd = ''.join(str((i + j) % 10) for j in range(4))  # 确保数字在0-9范围内
             results.add(abcd * 2)
 
         # 前7位相同，最后1位不同
         for i in range(10):
             for j in range(10):
-                results.add(str(i) * 7 + str(j))
+                if i != j:  # 确保前7位和最后1位不同
+                    results.add(str(i) * 7 + str(j))
 
         return results
 
