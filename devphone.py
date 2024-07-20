@@ -34,7 +34,12 @@ def generate_all_11_digit_numbers():
             for j in range(10):
                 if i != j:  # 确保前7位和最后1位不同
                     results.add(str(i) * 7 + str(j))
-
+        # AAABBBCC
+        for i in range(10):
+            for j in range(10):
+                for k in range(10):
+                    if i != j and j != k:
+                        results.add(str(i) * 3 + str(j) * 3 + str(k) * 2)
         return results
 
     eight_digit_combinations = generate_8_digits()
