@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+# -*- coding: UTF-8 -*-
+
 def generate_all_11_digit_numbers():
     numbers = set()  # 使用集合来自动去重
 
@@ -12,34 +15,23 @@ def generate_all_11_digit_numbers():
 
     # 生成符合规则的8位数字
     def generate_8_digits():
-        results = set()  # 使用集合来自动去重
+        results = set()
 
         # AAAAAAAA
-        for i in range(10):
-            results.add(str(i) * 8)
+        results.update(str(i) * 8 for i in range(10))
 
         # AAAABBBB
-        for i in range(10):
-            for j in range(10):
-                if i != j:  # 确保前后部分不同
-                    results.add(str(i) * 4 + str(j) * 4)
+        results.update(str(i) * 4 + str(j) * 4 for i in range(10) for j in range(10) if i != j)
 
         # ABCDABCD
-        for i in range(0, 7):  # 0到6是为了保证ABCD可以是连续的数字
-            abcd = ''.join(str((i + j) % 10) for j in range(4))  # 确保数字在0-9范围内
-            results.add(abcd * 2)
+        results.update(''.join(str((i + j) % 10) for j in range(4)) * 2 for i in range(7))
 
         # 前7位相同，最后1位不同
-        for i in range(10):
-            for j in range(10):
-                if i != j:  # 确保前7位和最后1位不同
-                    results.add(str(i) * 7 + str(j))
+        results.update(str(i) * 7 + str(j) for i in range(10) for j in range(10) if i != j)
+
         # AAABBBCC
-        for i in range(10):
-            for j in range(10):
-                for k in range(10):
-                    if i != j and j != k:
-                        results.add(str(i) * 3 + str(j) * 3 + str(k) * 2)
+        results.update(str(i) * 3 + str(j) * 3 + str(k) * 2 for i in range(10) for j in range(10) for k in range(10) if i != j and j != k)
+
         return results
 
     eight_digit_combinations = generate_8_digits()
@@ -48,8 +40,12 @@ def generate_all_11_digit_numbers():
     for second in second_digits:
         for third in third_digits:
             prefix = first_digit + second + third
-            for suffix in eight_digit_combinations:
-                numbers.add(prefix + suffix)
+            
+            # 处理 ABCABCABCCC 的情况
+            numbers.add(prefix * 3 + prefix[2] * 2)
+            
+            # 添加其他8位组合
+            numbers.update(prefix + suffix for suffix in eight_digit_combinations)
 
     return numbers
 
